@@ -9,45 +9,9 @@ import ItemsListNav from "./components/ItemsList/";
 import OrderData from "./components/OrderData/main.js";
 import Orders from "./components/Orders/main.js";
 
-
-
-// const Main = createStackNavigator(
-//     {
-//         ItemsListNav: {
-//             screen: ItemsListNav,
-//         },
-//     },
-//     {
-//         headerMode: "none",
-//     },
-// );
-// const CartNav = createStackNavigator(
-//     {
-//         Cart: {
-//             screen: Cart,
-//         },
-//         OrderData: {
-//             screen: OrderData,
-//         },
-//     },
-//     {
-//         headerMode: "none",
-//     },
-// );
-// const OrdersNav = createStackNavigator(
-//     {
-//         Orders: {
-//             screen: Orders,
-//         },
-//     },
-//     {
-//         headerMode: "none",
-//     },
-// );
 const MainNavigator = createMaterialTopTabNavigator(
 {
-    
-        ItemsListNav: Object.assign( ItemsListNav, { navigationOptions:{title: "Главне"} }),
+    ItemsListNav: Object.assign(ItemsListNav, {navigationOptions: {title: "Главная"}}),
     Cart: {
         screen: Cart,
         navigationOptions: {
@@ -63,9 +27,9 @@ const MainNavigator = createMaterialTopTabNavigator(
 },
 {
     initialRouteName: 'ItemsListNav',
-    // activeColor: '#f0edf6',
-    // inactiveColor: '#3e2465',
-    // barStyle: { backgroundColor: '#694fad' },
+    activeColor: '#f0edf6',
+    inactiveColor: '#3e2465',
+    barStyle: { backgroundColor: '#694fad' },
 });
   
 

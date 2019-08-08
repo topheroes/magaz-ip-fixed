@@ -6,6 +6,7 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 
 import Item from "./item.js";
 
+var API_ADDRESS = "192.168.1.215";
 
 const styles = StyleSheet.create({
     container: {
@@ -16,19 +17,22 @@ const styles = StyleSheet.create({
     },
 });
 
-const ItemsList = (props) =>
+const ItemsList = () =>
 {
+    const id = props.navigation.state.key;
+
     const [data, setData] = useState("");
 
     useEffect( () =>
     {
-        ( async ()=>{
-            console.log(`http://${nashIp}/wp-json/custom-routes/view_products_by_cat/${props.id}`)
-            let resp = await fetch(`http://${nashIp}/wp-json/custom-routes/view_products_by_cat/${props.id}`);
-            console.log("Точна?")
+        ( async () =>
+        {
+            let resp = await fetch(`http://${API_ADDRESS}/wp-json/custom-routes/view_products_by_cat/${id}`);
             let respJSON = await resp.json();
-            setData( respJSON );
+
+            setData(respJSON);
         })();
+
     }, []);
     
     return (
@@ -41,126 +45,73 @@ const ItemsList = (props) =>
     );
 }
 
-var nashIp = "192.168.63.2";
-
-const CurrentTab = (props)=>
-{
-    
-    // console.log(props.navigation.state.key);
-    const id = props.navigation.state.key;
-
-    return (
-        // <View style={styles.container}><Text>hehe</Text></View>
-        <ItemsList id={id}/>
-    );
-
-}
-
 const MainNavigator = (props) =>
 {
     const [categories, setCategories] = useState(null);
     const [firstTab, setFirstTab] = useState("");
     const [error, setError] = useState(false);
+    const [loadingEffect, setLoadingEffect] = useState(".");
 
-    // const navigatorHandler = (cat, header) =>
-    // {
-    //     let name = cat["name"];
-
-    //     let route = {}
-    //     // route[name] = (props) => <ItemsList id={cat["id"]}/>
-    //     // return <ItemsList id={cat["id"]}/>
-    //     return  () => <ItemsList id={cat["id"]}/>
-        
-    // };
-
-    useEffect(  () =>
+    useEffect( () =>
     {
-
         let resp, cats;
 
-        ( async ()=>{
-           // console.log(`http://${nashIp}/wp-json/custom-routes/products_categories`);
-        try{
-           resp = await fetch(`http://${nashIp}/wp-json/custom-routes/products_categories`);
-            cats = await resp.json();
-        }catch(e){
-            console.log(`error: ${e}`);
-        }
-        
-
-            // if ( cats["code"] )
-            // setError(true);
-            // else
-            { // hic dragones sunt
-                cats.shift() ; // Первый элемент у нас неопределенные категории. Удаляем
-
-                
-                let categoriesNav = {};
-            
-                
-
-                    cats.forEach( (cat)=>{
-                        
-                        
-                        categoriesNav[cat["id"]] = {
-                            screen: CurrentTab,
-                            
-                            navigationOptions: {
-                                title: cat["name"],
-                                id: cat["id"],
-                            }
-                        };
-                    })
-                
-
-                // for ( cat of cats )
-                // {
-                //     // let tab = navigatorHandler(cat, {headerMode: "none"});
-
-                    
-                
-                //     categoriesNav[cat["id"]] = {
-                //         screen: CurrentTab,
-                        
-                //         navigationOptions: {
-                //             title: cat["name"],
-                //             id: cat["id"],
-                //         }
-                //     };
-            
-                    
-                // }
-
-                
-                // Object.keys(categoriesNav)[0]
-                setFirstTab(Object.keys(categoriesNav)[0]);
-                 
-                console.log(categoriesNav);
-
-                setCategories(categoriesNav);
-                
+        ( async () =>
+        {
+            try
+            {
+                resp = await fetch(`http://${API_ADDRESS}/wp-json/custom-routes/products_categories`);
+                cats = await resp.json();
             }
+            catch(e)
+            {
+                setError(true);
+            }
+        
 
-        
-        
-        
+            if ( cats["code"] )
+                setError(true);
+            else
+            {                
+                let categoriesNav = {};
+
+                for ( cat of cats )
+                {
+                    if ( cat["name"] == "Uncategorized" )
+                        continue;
+                    
+                    categoriesNav[cat["id"]] = {
+                        screen: ItemsList,
+                        
+                        navigationOptions: {
+                            title: cat["name"],
+                            id: cat["id"],
+                        },
+                    };
+                }
+                setFirstTab(Object.keys(categoriesNav)[0]);
+                setCategories(categoriesNav);
+            }
         })();
-        
 
-        
     }, []);
 
-    
+    const loadingEffectTimeout = setTimeout( () =>
+    {
+        if ( Navigator || error )
+            clearTimeout(loadingEffectTimeout);
 
-    const Navigator = !categories ? null : createAppContainer( createMaterialBottomTabNavigator( categories, {initialRouteName: "15" } ) );
+        if ( loadingEffect == "..." )
+            setLoadingEffect(".");
+        else
+            setLoadingEffect(loadingEffect + ".");
+    }, 800);
     
-
-    return Navigator ? <Navigator/> : <Text>Loading...</Text>;
-        
+    const Navigator = !categories ? null : createAppContainer( createMaterialBottomTabNavigator(categories, {initialRouteName: "16"}) );
+    
+    return Navigator ? <Navigator/>
+        : error ? <Text>Произошла ошибка при получении данных с сервера.</Text>
+            : <Text>Загрузка{loadingEffect}</Text>;
 }
 
-
-
-// const ItemsListNav = createAppContainer(MainNavigator);
-// export default ItemsListNav;
 export default MainNavigator;
