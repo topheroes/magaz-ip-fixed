@@ -59,8 +59,9 @@ const styles = StyleSheet.create({
 
 const Item = (props) =>
 {
-    const product = props.product_data;
-    return (
+    const product = props.productData;
+
+    return product ? (
         <Card>
             <View style={styles.container}>
                 <View style={styles.card}>
@@ -68,7 +69,7 @@ const Item = (props) =>
                         <Text style={styles.leftHeader}>{product.name}</Text>
                         <Image
                             style={{width: 66, height: 58}}
-                            source={{uri: product_data.images[0].src}}
+                            source={{uri: product.images[0].src}}
                         />
                     </View>
                     <View style={styles.right}>
@@ -91,6 +92,6 @@ const Item = (props) =>
                 </View>
             </View>
         </Card>
-    );
+    ) : <></>;
 }
 export default Item;
