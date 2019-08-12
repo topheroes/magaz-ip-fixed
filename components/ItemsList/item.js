@@ -4,6 +4,8 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import { Card, Button } from 'react-native-material-ui';
 import { Dropdown } from 'react-native-material-dropdown';
 
+import API_ADDRESS from './ip'
+
 const styles = StyleSheet.create({
     container:
     {
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
 const Item = (props) =>
 {
     const product = props.productData;
+    console.log(product.images[0].src);
 
     return product ? (
         <Card>
@@ -68,8 +71,8 @@ const Item = (props) =>
                     <View style={styles.left}>
                         <Text style={styles.leftHeader}>{product.name}</Text>
                         <Image
-                            style={{width: 66, height: 58}}
-                            source={{uri: product.images[0].src}}
+                            style={{width: 66, height: 54}}
+                            source={{uri: product.images[0].src.replace('localhost', API_ADDRESS)}}
                         />
                     </View>
                     <View style={styles.right}>

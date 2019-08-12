@@ -5,8 +5,8 @@ import { createStackNavigator, createSwitchNavigator , createAppContainer } from
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
 import Item from "./item.js";
+import API_ADDRESS from './ip'
 
-var API_ADDRESS = "192.168.1.215";
 
 const styles = StyleSheet.create({
     container: {
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const ItemsList = () =>
+const ItemsList = (props) =>
 {
     const id = props.navigation.state.key;
 
@@ -96,18 +96,18 @@ const MainNavigator = (props) =>
 
     }, []);
 
-    const loadingEffectTimeout = setTimeout( () =>
-    {
-        if ( Navigator || error )
-            clearTimeout(loadingEffectTimeout);
+    // const loadingEffectTimeout = setTimeout( () =>
+    // {
+    //     if ( Navigator || error )
+    //         clearTimeout(loadingEffectTimeout);
 
-        if ( loadingEffect == "..." )
-            setLoadingEffect(".");
-        else
-            setLoadingEffect(loadingEffect + ".");
-    }, 800);
+    //     if ( loadingEffect == "..." )
+    //         setLoadingEffect(".");
+    //     else
+    //         setLoadingEffect(loadingEffect + ".");
+    // }, 800);
     
-    const Navigator = !categories ? null : createAppContainer( createMaterialBottomTabNavigator(categories, {initialRouteName: "16"}) );
+    const Navigator = !categories ? null : createAppContainer( createMaterialBottomTabNavigator(categories, {initialRouteName: "18"}) );
     
     return Navigator ? <Navigator/>
         : error ? <Text>Произошла ошибка при получении данных с сервера.</Text>
